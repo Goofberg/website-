@@ -1,14 +1,4 @@
-const http = require('https');
-
-const externalFunction = (userId, userName, message) => {
-    // Your external function logic here
-    console.log(`User ${userName} (ID: ${userId}) sent the message: ${message}`);
-};
-
-const server = http.createServer((req, res) => {
-    if (req.url === '/') {
-        const html = `
-            <!DOCTYPE html>
+<!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
@@ -57,26 +47,3 @@ const server = http.createServer((req, res) => {
                 </script>
             </body>
             </html>
-        `;
-
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(html);
-    } else if (req.url === '/api/sendMessage' && req.method === 'POST') {
-        let body = '';
-
-        req.on('data', chunk => {
-            body += chunk.toString();
-        });
-
-        req.on('end', () => {
-            const data = JSON.parse(body);
-            externalFunction(data.userIp, data.userInfo, data.message);
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ success: true, message: 'Message received!' }));
-        });
-    }
-});
-
-server.listen(4059, () => {
-    console.log('Server is running on port 4059');
-});
